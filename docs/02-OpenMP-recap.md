@@ -34,6 +34,7 @@ lang:   en
 ![](img/processes-threads.png)
 
 <div class="column">
+  
 ## Process
 
 - Long-lived: spawned when parallel program started, killed when
