@@ -20,6 +20,7 @@ lang:   en
 # Different design philosophies
 
 <div class="column">
+   
 ## CPU
 
 - General purpose
