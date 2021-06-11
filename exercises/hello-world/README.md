@@ -1,4 +1,8 @@
-# Hello world with OpenMP
+# Hello world with OpenMP offloading
+
+Compile and run a simple OpenACC test program, provided as `hello(.c|.F90)`.
+
+In order to compile the program on Puhti, you'll need to first load the ...
 
 On Grenoble node:
 
