@@ -1,7 +1,7 @@
 ---
 title:  "Introduction to GPU Programming"
 author: CSC/ENCCS Training
-date:   2021-10
+date:   2021-11
 lang:   en
 ---
 
