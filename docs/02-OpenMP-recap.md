@@ -143,16 +143,16 @@ int main(int argc, char argv[]) {
 
 <div class="column">
 ```console
-$ ifort -qopenmp omp_hello.f90 -o omp
+$ nvfortran -mp omp_hello.f90 -o omp
 ```
 </div>
 <div class="column">
 ```console
-$ icc -qopenmp omp_hello.c -o omp
+$ nvcc -mp -qopenmp omp_hello.c -o omp
 ```
 </div>
 
-* For other compilers: **GNU**: -fopenmp; **PGI**: -mp; **Cray**: -h omp
+* For other compilers: **GNU**: -fopenmp; **Intel**: -qopenmp; **Cray**: -h omp
 
 ```console
 $ export OMP_NUM_THREADS=4
