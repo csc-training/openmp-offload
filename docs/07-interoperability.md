@@ -23,7 +23,8 @@ lang:   en
 
 # Device data interoperability
 
-- OpenMP includes methods to access to device data pointers
+- OpenMP includes methods to access the device data pointers in the
+  host side
 - Device data pointers can be used to interoperate with libraries and
   other programming techniques available for accelerator devices
     - HIP/CUDA kernels and libraries
