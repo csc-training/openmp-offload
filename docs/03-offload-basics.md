@@ -92,7 +92,7 @@ lang:   en
     - `target`, `teams`, `parallel`, `target data`, `distribute`,
       `for` / `do`
 - Often used clauses
-    - `if (condition)`, `map(data), `nowait`
+    - `if (condition)`, `map(data)`, `nowait`
 
 # OpenMP directive syntax
 
@@ -121,7 +121,8 @@ lang:   en
 - Compilers that support OpenMP usually require an option that enables
   the feature
     - NVIDIA: `-mp=gpu`
-    - Cray: ?
+    - Cray: `-fopenmp -fopenmp-targets=xx -Xopenmp-target=xx`
+        - "target" options may be included automatically via modules
     - GNU: `-fopenmp`
 - Without these options a regular CPU version is compiled!
 - Conditional compilation with `_OPENMP` macro:
@@ -192,7 +193,8 @@ host code
     - number of teams is implementation dependent
 - Initially, single thread per team runs the following structured block
 - No synchronization between teams is possible
-- Probable mapping: each team runs within a streaming multiprocessor
+- Probable mapping: team corresponds to a "thread block" /
+  "workgroup" and runs within streaming multiprocessor / compute unit
 
 # Creating threads within a team
 
@@ -277,6 +279,25 @@ end do
 ```
 </div>
 
+# Controlling number of teams and threads
+
+- By default, the number of teams and the number of threads is up to
+  the implementation to decide
+- `num_teams` clause for `teams` construct and `num_threads` clause
+  for `parallel` construct can be used to specify number of teams and
+  threads
+    - May improve performance in some cases
+    - Performance is most likely not portable
+
+```c++
+#pragma omp target
+#pragma omp teams num_teams(32)
+#pragma omp parallel num_threads(128)
+{
+  // code executed in device
+}
+```
+
 # Composite directives
 
 - In many cases composite directives are more convenient
@@ -288,7 +309,7 @@ end do
 #pragma omp distribute parallel for
 for (int i = i; i < N; i++) {
   p[i] = v1[i] * v2[i]
-  }
+}
 ```
 </div>
 <div class=column>
@@ -300,6 +321,35 @@ do i = 1, N
 end do
 !$omp end distribute parallel do
 !$omp end target teams
+```
+</div>
+
+# Loop construct
+
+- In OpenMP 5.0 a new `loop` worksharing construct was introduced
+- Less prescriptive, leaves more freedom to the implementation to do
+  the work division
+    - Tells the compiler/runtime only that the loop iterations are
+      independent and can be executed in parallel
+
+<div class=column>
+```c++
+#pragma omp target
+#pragma omp loop
+for (int i = i; i < N; i++) {
+  p[i] = v1[i] * v2[i]
+}
+```
+</div>
+<div class=column>
+```fortran
+!$omp target
+!$omp loop
+do i = 1, N
+  p(i) = v1(i) * v2(i)
+end do
+!$omp end loop
+!$omp end target 
 ```
 </div>
 
