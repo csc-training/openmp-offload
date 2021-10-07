@@ -9,11 +9,13 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 
 ### Introduction to parallel programming
 
-- [Heat equation solver](heat-cpu/)
+- [Heat equation solver](exercises/heat-cpu/)
 
 ### Getting started with OpenMP offloading
 
-- [(Bonus) Simple offloading for heat equation](heat-equation/README-basic.md)
+- [Hello world](exercises/hello-world/)
+- [Vector addition](exercises/vector-sum/)
+- [(Bonus) Simple offloading for heat equation](exercises/heat-equation/README-basic.md)
 
 ### Using data clauses
 
