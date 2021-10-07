@@ -19,9 +19,10 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 
 ### Using data clauses
 
+- [Dot product](exercises/dot-product/)
 - [(Bonus) Data clauses in heat equation](heat-equation/README-data.md)
 
-### Unstructure data
+### Unstructured data
 
 - [(Bonus) Unstructured data in heat equation](heat-equation/README-unstructured.md)
 
