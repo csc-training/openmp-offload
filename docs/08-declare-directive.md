@@ -33,7 +33,6 @@ lang:   en
 ```c
 #pragma omp declare target
 void foo(float* v, int i, int n) {
-    #pragma acc loop vector
     for ( int j=0; j<n; ++j) {
         v[i*n+j] = 1.0f/(i*j);
     }
@@ -42,8 +41,7 @@ void foo(float* v, int i, int n) {
 
 #pragma omp target teams loop
 for (int i=0; i<n; ++i) {
-    foo(v,i);
-    // call on the device
+    foo(v,i);  // executed on the device
 }
 ```
 </div>
