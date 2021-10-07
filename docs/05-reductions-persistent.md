@@ -118,7 +118,6 @@ class Vector {
 
 # Exit data clauses
 
-
 `map(delete:var-list)`
   : `-`{.ghost}
 
@@ -129,7 +128,6 @@ class Vector {
 
 - Deallocate memory on the device and copy data from the device to the
   host
-</div>
 
 
 # Data directive: update
@@ -138,10 +136,11 @@ class Vector {
   device memory
     - C/C++: `#pragma omp target update [clauses]`
     - Fortran: `!$omp target update [clauses]`
-- Data transfer direction controlled by `to(var-list)` or
-  `from(var-list)` clauses
+- Data transfer direction controlled by `map(to:var-list)` or
+  `map(from:var-list)` clauses
     - direction from host perspective, *i.e.* `to` copies from host to device
 - At least one data direction clause must be present
+
 
 
 # Data directive: update
@@ -156,7 +155,8 @@ class Vector {
     - Unstructured data regions
 
 
-# `update` directive: example
+
+# update directive: example
 
 <div class="column">
 ## C/C++
@@ -172,7 +172,7 @@ int maxit=100;
     for (iter=0; iter < maxit; iter++) {
         /* Computations on device */
         omp_compute(a);
-        #pragma omp target update from(a) \
+        #pragma omp target update map(from:a) \
                 if(iter % 10 == 0)
     }
 }
@@ -187,13 +187,13 @@ real :: a(100)
 integer :: iter
 integer, parameter :: maxit = 100
 
-!$omp target data create(a)
+!$omp target data alloc(a)
     ! Initialize data on device
     call init(a)
     do iter=1,maxit
         ! Computations on device
         call omp_compute(a)
-        !$omp target update self(a)
+        !$omp target update map(from:a)
         !$omp& if(mod(iter,10)==0)
     end do
 !$acc end data
@@ -208,12 +208,11 @@ integer, parameter :: maxit = 100
 - Data life-time on device is the implicit life-time of the variable
     - C/C++: `#pragma omp declare target [clauses]`
     - Fortran: `!$omp declare target [clauses]`
-- Supports usual data clauses, and additionally
-    - `device_resident`
-    - `link`
 
 
 # Porting and managed memory
+
+TODO: check the code
 
 <div class="column">
 - Porting a code with complicated data structures can be challenging
@@ -260,7 +259,9 @@ TODO: check requires construct
 - Data directive
     - Structured data region
     - map types: `to`, `from`, `tofrom`, `alloc`, `delete`
-- Enter data & exit data
+- `enter data` and `exit data`
     - Unstructured data region
 - Update directive
 - Declare directive
+
+-->
