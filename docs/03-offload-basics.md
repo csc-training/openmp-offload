@@ -149,14 +149,23 @@ host code
 # Runtime API functions
 
 - Low-level runtime API functions can be used to
-    - Query the number and type of devices in the system
-    - Initialize/shutdown the device(s)
+    - Query the number of devices in the system
+    - Select the device to use
     - Allocate/deallocate memory on the device(s)
     - Transfer data to/from the device(s)
 -  Function definitions are in
     - C/C++ header file `omp.h`
     - `omp_lib` Fortran module 
 
+# Useful API functions
+
+- `omp_is_initial_device()` : returns True when called in host, False
+  otherwise
+- `omp_get_num_devices()` : number of devices available
+- `omp_get_device_num()` : number of device where the function
+  is called
+- `omp_get_default_device` : default device
+- `omp_set_default_device` : set the default device
 
 # OpenMP offload constructs {.section}
 
@@ -206,6 +215,8 @@ host code
 - With N teams and M threads per team there will be N x M threads in
   total
 - Threads within a team can synchronize
+- Number of teams and threads can be queried with the
+  `omp_get_num_teams()` and `omp_get_num_threads()` API functions
 
 # Creating teams and threads
 
