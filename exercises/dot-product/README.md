@@ -1,4 +1,4 @@
-## Data clauses and reductions: dot product
+## Data movement clauses and reductions: dot product
 
 Calculate the dot product of two vectors (`r = sum[ A(i) x B(i) ]`) in parallel using OpenMP.
 

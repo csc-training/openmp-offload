@@ -17,7 +17,7 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 - [Vector addition](exercises/vector-sum/)
 - [Simple offloading for heat equation](exercises/heat-equation/README-basic.md)
 
-### Using data clauses
+### Controlling data movement
 
 - [Dot product](exercises/dot-product/)
 - [(Bonus) Data clauses in heat equation](heat-equation/README-data.md)
