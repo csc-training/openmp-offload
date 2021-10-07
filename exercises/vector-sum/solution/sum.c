@@ -14,7 +14,7 @@ int main(void)
 
 #pragma omp target teams distribute parallel for
     for (int i = 0; i < NX; i++) {
-        vecC[i] = vecA[i] * vecB[i];
+        vecC[i] = vecA[i] + vecB[i];
     }
 
     double sum = 0.0;

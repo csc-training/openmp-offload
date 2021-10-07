@@ -16,7 +16,7 @@ program vectorsum
 
   !$omp target loop
   do i = 1, nx
-     vecC(i) = vecA(i) * vecB(i)
+     vecC(i) = vecA(i) + vecB(i)
   end do
   !$omp end target loop
 

@@ -16,7 +16,7 @@ program vectorsum
 
   !$omp target teams distribute parallel do
   do i = 1, nx
-     vecC(i) = vecA(i) * vecB(i)
+     vecC(i) = vecA(i) + vecB(i)
   end do
   !$omp end target teams distribute parallel do
 
