@@ -47,24 +47,24 @@ for (int i=0; i<n; ++i) {
 </div>
 
 <div class="column">
-TODO check how it goes with Fortran!!!
+
 ## Fortran
 ```fortran
 subroutine foo(v, i, n)
-  !$acc routine vector
+  !$omp declare target
   real :: v(:,:)
   integer :: i, n
-  !$acc loop vector
+
   do j=1,n
      v(i,j) = 1.0/(i*j)
   enddo
 end subroutine
 
-!$acc parallel loop
+!$omp target teams loop
 do i=1,n
   call foo(v,i,n)
 enddo
-!$acc end parallel loop
+!$omp end target teams loop
 ```
 </div>
 
