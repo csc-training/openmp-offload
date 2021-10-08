@@ -20,6 +20,7 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 ### Controlling data movement
 
 - [Dot product](exercises/dot-product/)
+- [Sum and dot product](exercises/sum-dot/)
 - [(Bonus) Data clauses in heat equation](heat-equation/README-data.md)
 
 ### Unstructured data
