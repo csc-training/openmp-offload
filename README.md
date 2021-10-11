@@ -21,14 +21,18 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 
 - [Dot product](exercises/dot-product/)
 - [Sum and dot product](exercises/sum-dot/)
-- [(Bonus) Data clauses in heat equation](heat-equation/README-data.md)
+- [Using data clauses in heat equation](heat-equation/README-data.md)
 
 ### Unstructured data and device functions
 
 - [Device functions](exercises/gpu-functions/)
-- [(Bonus) Unstructured data in heat equation](heat-equation/README-unstructured.md)
+- [Unstructured data in heat equation](heat-equation/README-unstructured.md)
+
+### Interoperability with libraries and asynchronous operations
+
+- [Using CUDA library](exercises/device-ptr)
 
 ### Using multiple GPUS
 
-- [(Bonus) Multi-GPU parallelization for heat equation](heat-equation/README-multi-gpu.md)
+- [Multi-GPU parallelization for heat equation](heat-equation/README-multi-gpu.md)
 
