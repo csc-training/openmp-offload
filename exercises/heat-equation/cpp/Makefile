@@ -1,12 +1,7 @@
 ifeq ($(COMP),)
-COMP=nv
+COMP=nvhpc
 endif
 
-HAVE_PNG=0
-ifeq ($(HAVE_PNG),1)
-PNG_LIBS=-lpng -lz -lc -lrt
-PNG_LDFLAGS=-L/usr/lib -L/usr/lib/x86_64-linux-gnu -L/usr/local/lib
-endif
 
 COMMONDIR=../common
 
@@ -15,15 +10,17 @@ CXX=g++
 CC=gcc
 CCFLAGS=-g -O3 -fopenmp -Wall -I$(COMMONDIR)
 LDFLAGS=
-LIBS=
+LIBS=-lpng
 endif
 
-ifeq ($(COMP),nv)
+ifeq ($(COMP),nvhpc)
 CXX=nvc++
 CC=nvc
-CCFLAGS=-O3 -mp=gpu -Minfo=mp -I$(COMMONDIR)
+MINFO=
+# MINFO=-Minfo=mp
+CCFLAGS=-O3 -mp=gpu -gpu=cc80 -I$(COMMONDIR) $(MINFO)
 LDFLAGS=
-LIBS=
+LIBS=-lpng
 endif
 
 ifeq ($(COMP),intel)
@@ -31,7 +28,7 @@ CXX=icpx
 CC=icx
 CCFLAGS=-g -O3 -fopenmp -I$(COMMONDIR)
 LDFLAGS=
-LIBS=
+LIBS=-lpng
 endif
 
 EXE=heat_serial
@@ -49,7 +46,6 @@ io.o: io.cpp heat.h
 main.o: main.cpp heat.h
 
 $(OBJS_PNG): C_COMPILER := $(CC)
-$(OBJS_PNG): CCFLAGS += -DHAVE_PNG=$(HAVE_PNG) -I/usr/include -I/usr/local/include
 $(OBJS): C_COMPILER := $(CXX)
 
 $(EXE): $(OBJS) $(OBJS_PNG)
@@ -63,4 +59,4 @@ $(EXE): $(OBJS) $(OBJS_PNG)
 
 .PHONY: clean
 clean:
-	-/bin/rm -f $(EXE) a.out *.o *.png *~ ../common/*.o
+	-/bin/rm -f $(EXE) a.out *.o *.png *~ $(COMMDIR)/*.o

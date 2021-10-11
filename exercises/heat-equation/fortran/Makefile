@@ -1,23 +1,19 @@
 ifeq ($(COMP),)
-COMP=nv
-endif
-
-HAVE_PNG=0
-ifeq ($(HAVE_PNG),1)
-PNG_LIBS=-lpng -lz -lc -lrt
-PNG_LDFLAGS=-L/usr/lib -L/usr/lib/x86_64-linux-gnu -L/usr/local/lib 
+COMP=nvhpc
 endif
 
 
-COMMONDIR=../../common
+COMMONDIR=../common
 
-ifeq ($(COMP),nv)
+ifeq ($(COMP),nvhpc)
 FC=nvfortran
 CC=nvc
-FCFLAGS=-O3 -mp=gpu -Minfo=mp
+MINFO=
+# MINFO=-Minfo=mp
+FCFLAGS=-O3 -mp=gpu -gpu=cc80 $(MINFO)
 CCFLAGS=-O3 -I$(COMMONDIR)
 LDFLAGS=
-LIBS= 
+LIBS=-lpng
 endif
 
 ifeq ($(COMP),gnu)
@@ -26,7 +22,7 @@ CC=gcc
 FCFLAGS=-O3 -Wall -fopenmp
 CCFLAGS=-O3 -Wall -I$(COMMONDIR)
 LDFLAGS=-fopenmp
-LIBS=
+LIBS=-lpng
 endif
 
 
@@ -46,15 +42,15 @@ pngwriter_mod.o: pngwriter_mod.F90 heat_mod.o
 main.o: main.F90 heat_mod.o core.o io.o setup.o utilities.o
 
 $(EXE): $(OBJS) $(OBJS_PNG)
-	$(FC) $(FCFLAGS) $(OBJS) $(OBJS_PNG) -o $@ $(LDFLAGS) $(PNG_LDFLAGS) $(LIBS) $(PNG_LIBS)
+	$(FC) $(FCFLAGS) $(OBJS) $(OBJS_PNG) -o $@ $(LDFLAGS) $(LIBS) 
 
 %.o: %.F90
 	$(FC) $(FCFLAGS) -c $< -o $@
 
 %.o: %.c
-	$(CC) -DHAVE_PNG=$(HAVE_PNG) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
-	-/bin/rm -f $(EXE) a.out *.o *.mod *.png *~  ../../common/*.o
+	-/bin/rm -f $(EXE) a.out *.o *.mod *.png *~  $(COMMONDIR)/*.o
 
