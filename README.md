@@ -15,7 +15,7 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 
 - [Hello world](exercises/hello-world/)
 - [Vector addition](exercises/vector-sum/)
-- [Simple offloading for heat equation](exercises/heat-equation/README-basic.md)
+- [Simple offloading for Laplace equation](exercises/jacobi/)
 
 ### Controlling data movement
 
