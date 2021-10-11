@@ -18,7 +18,7 @@ CXX=nvc++
 CC=nvc
 MINFO=
 # MINFO=-Minfo=mp
-CCFLAGS=-O3 -mp=gpu -gpu=cc80 -I$(COMMONDIR) $(MINFO)
+CCFLAGS=-O3 -mp -I$(COMMONDIR) $(MINFO)
 LDFLAGS=
 LIBS=-lpng
 endif
@@ -32,18 +32,19 @@ LIBS=-lpng
 endif
 
 EXE=heat_serial
-OBJS=main.o core.o setup.o utilities.o io.o
+OBJS=main.o heat.o core.o setup.o utilities.o io.o
 OBJS_PNG=$(COMMONDIR)/pngwriter.o
 
 
 all: $(EXE)
 
 
-core.o: core.cpp heat.h
-utilities.o: utilities.cpp heat.h
-setup.o: setup.cpp heat.h
-io.o: io.cpp heat.h
-main.o: main.cpp heat.h
+core.o: core.cpp heat.hpp
+utilities.o: utilities.cpp heat.hpp
+heat.o: heat.cpp heat.hpp 
+setup.o: setup.cpp heat.hpp
+io.o: io.cpp heat.hpp
+main.o: main.cpp heat.hpp
 
 $(OBJS_PNG): C_COMPILER := $(CC)
 $(OBJS): C_COMPILER := $(CXX)

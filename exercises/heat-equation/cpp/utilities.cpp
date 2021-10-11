@@ -1,49 +1,20 @@
 // Utility functions for heat equation solver
+//    NOTE: This file does not need to be edited! 
 
-#include <stdlib.h>
-#include <assert.h>
+#include "heat.hpp"
 
-#include "heat.h"
-
-
-// Copy data on temperature1 into temperature2
-void copy_field(field *temperature1, field *temperature2)
-{
-    assert(temperature1->nx == temperature2->nx);
-    assert(temperature1->ny == temperature2->ny);
-    assert(temperature1->data.size() == temperature2->data.size());
-    std::copy(temperature1->data.begin(), temperature1->data.end(),
-              temperature2->data.begin());
-}
-
-// Swap the field data for temperature1 and temperature2
-void swap_fields(field *temperature1, field *temperature2)
-{
-    std::swap(temperature1->data, temperature2->data);
-}
-
-// Allocate memory for a temperature field and initialise it to zero
-void allocate_field(field *temperature)
-{
-    // Include also boundary layers
-    int newSize = (temperature->nx + 2) * (temperature->ny + 2);
-    temperature->data.resize(newSize, 0.0);
-}
-
-// Calculate average temperature over the non-boundary grid cells
-double average(field *temperature)
+// Calculate average temperature
+double average(const Field& field)
 {
      double average = 0.0;
 
-     for (int i = 1; i < temperature->nx + 1; i++) {
-       for (int j = 1; j < temperature->ny + 1; j++) {
-         int ind = i * (temperature->ny + 2) + j;
-         average += temperature->data[ind];
+     for (int i = 1; i < field.nx + 1; i++) {
+       for (int j = 1; j < field.ny + 1; j++) {
+         int ind = i * (field.ny + 2) + j;
+         average += field.temperature[ind];
        }
      }
 
-     average /= (temperature->nx * temperature->ny);
+     average /= (field.nx_full * field.ny_full);
      return average;
 }
-
-

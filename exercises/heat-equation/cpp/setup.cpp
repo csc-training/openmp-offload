@@ -1,18 +1,11 @@
-/* Setup routines for heat equation solver */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
-#include "heat.h"
+#include <string>
+#include <cstdlib>
+#include <iostream>
+#include "heat.hpp"
 
 
-#define NSTEPS 500  // Default number of iteration steps
-
-/* Initialize the heat equation solver */
-void initialize(int argc, char *argv[], field *current,
-                field *previous, int *nsteps)
+void initialize(int argc, char *argv[], Field& current,
+                Field& previous, int& nsteps)
 {
     /*
      * Following combinations of command line arguments are possible:
@@ -26,11 +19,11 @@ void initialize(int argc, char *argv[], field *current,
     int rows = 2000;             //!< Field dimensions with default values
     int cols = 2000;
 
-    char input_file[64];        //!< Name of the optional input file
+    std::string input_file;        //!< Name of the optional input file
 
-    int read_file = 0;
+    bool read_file = 0;
 
-    *nsteps = NSTEPS;
+    nsteps = 500;
 
     switch (argc) {
     case 1:
@@ -38,91 +31,38 @@ void initialize(int argc, char *argv[], field *current,
         break;
     case 2:
         /* Read initial field from a file */
-        strncpy(input_file, argv[1], 63);
-        read_file = 1;
+        input_file = argv[1];
+        read_file = true;
         break;
     case 3:
         /* Read initial field from a file */
-        strncpy(input_file, argv[1], 63);
-        read_file = 1;
+        input_file = argv[1];
+        read_file = true;
 
         /* Number of time steps */
-        *nsteps = atoi(argv[2]);
+        nsteps = std::atoi(argv[2]);
         break;
     case 4:
         /* Field dimensions */
-        rows = atoi(argv[1]);
-        cols = atoi(argv[2]);
+        rows = std::atoi(argv[1]);
+        cols = std::atoi(argv[2]);
         /* Number of time steps */
-        *nsteps = atoi(argv[3]);
+        nsteps = std::atoi(argv[3]);
         break;
     default:
-        printf("Unsupported number of command line arguments\n");
+        std::cout << "Unsupported number of command line arguments" << std::endl;
         exit(-1);
     }
 
     if (read_file) {
-        read_field(current, previous, input_file);
+        std::cout << "Reading input from " + input_file << std::endl;
+        read_field(current, input_file);
     } else {
-        set_field_dimensions(current, rows, cols);
-        set_field_dimensions(previous, rows, cols);
-        generate_field(current);
-        allocate_field(previous);
-        copy_field(current, previous);
-    }
-}
-
-/* Generate initial temperature field.  Pattern is disc with a radius
- * of nx / 6 in the center of the grid.
- * Boundary conditions are (different) constant temperatures outside the grid */
-void generate_field(field *temperature)
-{
-    int ind;
-    double radius;
-    int dx, dy;
-
-    /* Allocate the temperature array, note that
-     * we have to allocate also the ghost layers */
-    int newSize = (temperature->nx + 2) * (temperature->ny + 2);
-    temperature->data.resize(newSize, 0.0);
-
-
-    /* Radius of the source disc */
-    radius = temperature->nx / 6.0;
-    for (int i = 0; i < temperature->nx + 2; i++) {
-        for (int j = 0; j < temperature->ny + 2; j++) {
-	    ind = i * (temperature->ny + 2) + j;
-            /* Distance of point i, j from the origin */
-            dx = i - temperature->nx / 2 + 1;
-            dy = j - temperature->ny / 2 + 1;
-            if (dx * dx + dy * dy < radius * radius) {
-                temperature->data[ind] = 5.0;
-            } else {
-                temperature->data[ind] = 65.0;
-            }
-        }
+        current.setup(rows, cols);
+        current.generate();
     }
 
-    /* Boundary conditions */
-    for (int i = 0; i < temperature->nx + 2; i++) {
-        temperature->data[i * (temperature->ny + 2)] = 20.0;
-        temperature->data[i * (temperature->ny + 2) + temperature->ny + 1] = 70.0;
-    }
+    // copy "current" field also to "previous"
+    previous = current;
 
-    for (int j = 0; j < temperature->ny + 2; j++) {
-        temperature->data[j] = 85.0;
-    }
-    for (int j = 0; j < temperature->ny + 2; j++) {
-        temperature->data[(temperature->nx + 1) * (temperature->ny + 2) + j] = 5.0;
-    }
-}
-
-/* Set dimensions of the field. Note that the nx is the size of the first
- * dimension and ny the second. */
-void set_field_dimensions(field *temperature, int nx, int ny)
-{
-    temperature->dx = DX;
-    temperature->dy = DY;
-    temperature->nx = nx;
-    temperature->ny = ny;
 }

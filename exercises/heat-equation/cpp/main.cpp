@@ -1,63 +1,70 @@
-// Main routine for heat equation solver in 2D.
+/* Heat equation solver in 2D. */
 
-#include <stdio.h>
+#include <string>
+#include <iostream>
+#include <iomanip>
+
+#include "heat.hpp"
+#ifdef _OPENMP
 #include <omp.h>
-
-#include "heat.h"
+#endif
 
 int main(int argc, char **argv)
 {
-    // Image output interval
-    int image_interval = 1500;
 
-    // Number of time steps
-    int nsteps;
-    // Current and previous temperature fields
-    field current, previous;
-    initialize(argc, argv, &current, &previous, &nsteps);
+    const int image_interval = 100;    // Image output interval
 
-    // Output the initial field 
-    write_field(&current, 0);
+    int nsteps;                 // Number of time steps
+    Field current, previous;    // Current and previous temperature fields
 
-    double average_temp = average(&current);
-    printf("Average temperature at start: %f\n", average_temp);
+    initialize(argc, argv, current, previous, nsteps);
 
-    // Diffusion constant
-    double a = 0.5;
+    // Output the initial field
+    write_field(current, 0);
 
-    // Compute the largest stable time step
-    double dx2 = current.dx * current.dx;
-    double dy2 = current.dy * current.dy;
-    // Time step
-    double dt = dx2 * dy2 / (2.0 * a * (dx2 + dy2));
+    auto average_temp = average(current);
+    std::cout << "Simulation parameters: " 
+              << "rows: " << current.nx_full << " columns: " << current.ny_full
+              << " time steps: " << nsteps << std::endl;
+    std::cout << std::fixed << std::setprecision(6);
+    std::cout << "Average temperature at start: " << average_temp << std::endl;
 
-    // Get the start time stamp
-    double start_clock = omp_get_wtime();
+    const double a = 0.5;     // Diffusion constant 
+    auto dx2 = current.dx * current.dx;
+    auto dy2 = current.dy * current.dy;
+    // Largest stable time step 
+    auto dt = dx2 * dy2 / (2.0 * a * (dx2 + dy2));
 
-    // Time evolution
+    //Get the start time stamp 
+    auto start_clock = omp_get_wtime();
+
+    // Time evolve
     for (int iter = 1; iter <= nsteps; iter++) {
-        evolve(&current, &previous, a, dt);
+        evolve(current, previous, a, dt);
         if (iter % image_interval == 0) {
-            write_field(&current, iter);
+            write_field(current, iter);
         }
         // Swap current field so that it will be used
         // as previous for next iteration step
-        swap_fields(&current, &previous);
+        std::swap(current, previous);
     }
 
-    double stop_clock = omp_get_wtime();
-    // Average temperature for reference
-    average_temp = average(&previous);
+    auto stop_clock = omp_get_wtime();
 
-    // Determine the CPU time used for all the iterations
-    printf("Iterations took %.3f seconds.\n", (stop_clock - start_clock));
-    printf("Average temperature: %f\n", average_temp);
-    if (argc == 1) {
-        printf("Reference value with default arguments: 59.281239\n");
+    // Average temperature for reference 
+    average_temp = average(previous);
+
+    std::cout << "Iteration took " << (stop_clock - start_clock)
+              << " seconds." << std::endl;
+    std::cout << "Average temperature: " << average_temp << std::endl;
+    if (1 == argc) {
+        std::cout << "Reference value with default arguments: " 
+                  << 59.281239 << std::endl;
     }
 
+    
     // Output the final field
-    write_field(&previous, nsteps);
+    write_field(previous, nsteps);
 
     return 0;
 }
