@@ -23,8 +23,9 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 - [Sum and dot product](exercises/sum-dot/)
 - [(Bonus) Data clauses in heat equation](heat-equation/README-data.md)
 
-### Unstructured data
+### Unstructured data and device functions
 
+- [Device functions](exercises/gpu-functions/)
 - [(Bonus) Unstructured data in heat equation](heat-equation/README-unstructured.md)
 
 ### Using multiple GPUS
