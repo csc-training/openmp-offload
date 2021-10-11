@@ -113,7 +113,7 @@ Examples on how to run the binary:
                             a temperature grid provided in the file
                             `bottle.dat` for 1000 time steps)
 - `./heat 4000 8000 1000` (three arguments - will run the program in a
-                           1024x2048 grid for 1000 time steps)
+                           4000x8000 grid for 1000 time steps)
 
 The program will produce an image (PNG) of the temperature field after every
 500 iterations. You can change the frequency by modifying the parameter
