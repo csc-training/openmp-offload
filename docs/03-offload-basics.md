@@ -81,18 +81,16 @@ lang:   en
 
 # OpenMP directive syntax
 
-|         | sentinel      | construct | clauses      |
+- OpenMP uses compiler directives for defining compute regions (and data
+  transfers) that are to be performed on a GPU
+- OpenMP directives consist of a *sentinel*, followed by the directive
+  name and optional clauses
+
+|         | sentinel      | directive | clauses      |
 | ------- | ------------- | --------- | ------------ |
 | C/C++   | `#pragma omp` | `target` | `map(data)` |
 | Fortran | `!$omp`       | `target` | `map(data)` |
 
-- OpenMP uses compiler directives for defining compute regions (and data
-  transfers) that are to be performed on a GPU
-- Important constructs
-    - `target`, `teams`, `parallel`, `target data`, `distribute`,
-      `for` / `do`
-- Often used clauses
-    - `if (condition)`, `map(data)`, `nowait`
 
 # OpenMP directive syntax
 
@@ -107,7 +105,7 @@ lang:   en
 ```
 </div>
 <div class=column>
-- In Fortran, and `end` directive specifies the end of region
+- In Fortran, and `end` directive specifies the end of the construct
 
 ```fortran
 !$omp parallel
@@ -118,13 +116,20 @@ lang:   en
 
 # Compiling an OpenMP program for GPU offloading
 
-- Compilers that support OpenMP usually require an option that enables
-  the feature
-    - NVIDIA: `-mp=gpu`
-    - Cray: `-fopenmp -fopenmp-targets=xx -Xopenmp-target=xx`
-        - "target" options may be included automatically via modules
-    - GNU: `-fopenmp`
+- In addition to normal OpenMP options (*i.e.* `-fopenmp`), one needs
+  to typically specify offload target (NVIDIA GPU, AMD GPU, ...)
+  
+| Compiler    |  Options for offload       |
+| ----------- | -------------------------- |
+| NVIDIA         | `-mp=gpu` (`-gpu=ccNN`)         |
+| Cray       | `-fopenmp-targets=xx -Xopenmp-target=xx` |
+| Clang       | `-fopenmp-targets=xx` |
+| GCC        | `-foffload=yy` |
+
 - Without these options a regular CPU version is compiled!
+
+# Compiling an OpenMP program for GPU offloading
+
 - Conditional compilation with `_OPENMP` macro:
 
 ```c
@@ -135,6 +140,11 @@ host code
 #endif
 ```
 
+- Example: Compiling with NVIDIA HPC in Mahti
+
+```bash
+nvc -o my_exe test.c -mp=gpu -gpu=cc80
+```
 
 # OpenMP internal control variables
 
