@@ -210,9 +210,8 @@ integer, parameter :: maxit = 100
     - Fortran: `!$omp declare target [clauses]`
 
 
-# Porting and managed memory
+# Porting and unified memory
 
-TODO: check the code
 
 <div class="column">
 - Porting a code with complicated data structures can be challenging
@@ -223,35 +222,56 @@ TODO: check the code
 <div class="column">
 ```c
 typedef struct points {
-    double *x, *y;
-    int n;
+  double *x, *y;
+  int n;
 }
 
-void init_point() {
-    points p;
+void process_points() {
+  points p;
 
-    #pragma omp target data map(alloc:p)
-    {
-        p.size = n;
-        p.x = (double) malloc(...
-        p.y = (double) malloc(...
-        #pragma omp target update map(to:p)
-        #pragma omp target update map(to:p.x[0:n], ...)
+  #pragma omp target data map(alloc:p)
+  {
+    p.size = n;
+    p.x = (double) malloc(...
+    p.y = (double) malloc(...
+    #pragma omp target update map(to:p)
+    #pragma omp target update map(to:p.x[0:n], 
+    
+    #pragma omp target
+    // processs
 ```
+
 </div>
 
 
-# Managed memory
+# Unified memory
 
-TODO: check requires construct
+<div class="column">
+- OpenMP 5.0 added a `requires` construct so that program can declare 
+  it assumes shared memory between host and device
+- Compiler support in progress
+</div>
 
-- Managed memory copies can be enabled on PGI compilers
-    - Pascal (P100): `--ta=tesla,cc60,managed`
-    - Volta (V100): `--ta=tesla,cc70,managed`
-- For full benefits Pascal or Volta generation GPU is needed
-- Performance depends on the memory access patterns
-    - For some cases performance is comparable with explicitly tuned
-      versions
+<div class="column">
+```c
+typedef struct points {
+  double *x, *y;
+  int n;
+}
+
+void process_points() {
+  points p;
+
+  #pragma omp requires unified_shared_memory
+    
+  p.size = n;
+  p.x = (double) malloc(...
+  p.y = (double) malloc(...
+
+  #pragma omp target
+  // processs
+```
+</div>
 
 
 # Summary
@@ -264,4 +284,3 @@ TODO: check requires construct
 - Update directive
 - Declare directive
 
--->
