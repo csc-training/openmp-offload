@@ -94,7 +94,7 @@ submitted with the following batch job script:
 #!/bin/bash
 #SBATCH --job-name=example
 #SBATCH --account=project_2000745
-#SBATCH --partition=medium
+#SBATCH --partition=gpusmall
 #SBATCH --reservation=openmp_offload
 #SBATCH --time=00:05:00
 #SBATCH --nodes=1
@@ -104,7 +104,8 @@ submitted with the following batch job script:
 srun my_exe
 ```
 
-Save the script *e.g.* as `job.sh` and submit it with `sbatch job.sh`. 
+Save the script *e.g.* as `job.sh` and submit it with `sbatch job.sh`. The [exercises](exercises) 
+directory contains additional job script templates (`job_xxx.sh`).
 The output of job will be in file `slurm-xxxxx.out`. You can check the status of your jobs with `squeue -u $USER` and kill possible hanging applications with
 `scancel JOBID`.
 
