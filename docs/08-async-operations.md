@@ -33,7 +33,25 @@ lang:   en
 
 # OpenMP and asynchronous execution
 
-TODO: example code
+<div class=column>
+```c
+#pragma omp target nowait
+process_in_device();
+
+process_in_host();
+#pragma omp taskwait
+```
+</div>
+<div class=column>
+```fortran
+ !$omp target nowait
+ call process_in_device();
+ !$omp end target
+ 
+ process_in_host();
+ !$omp taskwait
+```
+</div>
 
 # Task dependencies
 
@@ -65,8 +83,28 @@ TODO: example code
 
 # Task dependencies
 
-TODO: example code
-
+<div class=column>
+```c
+#pragma omp task depend(out: A) 
+ {Code A}
+#pragma omp target depend(in: A) depend(out: B) \
+ nowait
+ {Code B}
+#pragma omp target depend(in: B) depend(out: C) \
+ nowait
+ {Code C}
+#pragma omp target depend(in: B) depend(out: D) \
+ nowait 
+ {Code D}
+#pragma omp task depend(in: A) depend(in: A)
+  {Code E}
+#pragma omp task depend(in: C,D,E) 
+  {Code F}
+```
+</div>
+<div class=column>
+![](img/target-dependencies.png){.center width=80%}
+</div>
 
 # Summary
 
