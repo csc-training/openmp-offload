@@ -31,6 +31,7 @@ CSC's *GPU Programming with OpenMP offloading* courses.
 ### Interoperability with libraries and asynchronous operations
 
 - [Using CUDA library](exercises/device-ptr)
+- [Asynchronous operations](exercises/async-operations)
 
 ### Using multiple GPUS
 
