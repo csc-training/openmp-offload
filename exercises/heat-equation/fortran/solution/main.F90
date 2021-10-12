@@ -67,7 +67,7 @@ program heat_solve
   ! image_interval steps
 
   start =  mpi_wtime()
-  enter_data(current, previous)
+  call enter_data(current, previous)
   !$omp end single
 
   do iter = 1, nsteps
@@ -77,7 +77,7 @@ program heat_solve
      call evolve(current, previous, a, dt)
      !$omp single
      if (mod(iter, image_interval) == 0) then
-        update_host(current)
+        call update_host(current)
         call write_field(current, iter, parallelization)
      end if
      call swap_fields(current, previous)
@@ -85,7 +85,7 @@ program heat_solve
   end do
 
 !$omp end parallel
-  exit_data(current, previous)
+  call exit_data(current, previous)
 
   stop = mpi_wtime()
 
