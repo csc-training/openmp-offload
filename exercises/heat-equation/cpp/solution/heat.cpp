@@ -1,6 +1,7 @@
 #include "heat.hpp"
 #include <iostream>
 #include <mpi.h>
+#include <omp.h>
 
 void Field::setup(int nx_in, int ny_in, ParallelData parallel) 
 {
@@ -18,6 +19,29 @@ void Field::setup(int nx_in, int ny_in, ParallelData parallel)
    std::size_t field_size = (nx + 2) * (ny + 2);
 
    temperature = std::vector<double> (field_size);
+
+#ifdef _OPENMP
+    MPI_Comm intranodecomm;
+    int nodeRank, nodeProcs, devCount;
+
+    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0,  MPI_INFO_NULL, &intranodecomm);
+
+    MPI_Comm_rank(intranodecomm, &nodeRank);
+    MPI_Comm_size(intranodecomm, &nodeProcs);
+
+    MPI_Comm_free(&intranodecomm);
+
+    devCount = omp_get_num_devices();
+
+    if (nodeProcs > devCount) {
+        printf("Not enough GPUs for all processes in the node.\n");
+        fflush(stdout);
+        MPI_Abort(MPI_COMM_WORLD, -2);
+    }
+
+    omp_set_default_device(nodeRank);
+#endif
+   
 
 }
 
