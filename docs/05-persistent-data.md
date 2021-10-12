@@ -1,75 +1,12 @@
 ---
-title:  "Reductions and non-structured data"
+title:  "Non-structured data"
 author: CSC - IT Center for Science
 date:   2020-10
 lang:   en
 ---
 
 
-
-
-
-# Reductions
-
-`reduction(operator:var-list)`
-  : `-`{.ghost}
-
-- Performs reduction on the (scalar) variables in list
-- Private reduction variable is created for each gang's partial result
-    - initialised to operators initial value
-- After parallel region the reduction operation is applied to the private
-  variables and the result is aggregated to the shared variable *and* the
-  aggregated result is combined with the original value of the variable
-
-
-# Reduction operators in C/C++ and Fortran
-
-| Arithmetic Operator | Initial value |
-|---------------------|---------------|
-| `+`                 | `0`           |
-| `-`                 | `0`           |
-| `*`                 | `1`           |
-| `max`               | least         |
-| `min`               | largest       |
-
-
-# Reduction operators in C/C++ only
-
-<div class="column">
-| Logical Operator | Initial value |
-|------------------|---------------|
-| `&&`             | `1`           |
-| `||`             | `0`           |
-</div>
-
-<div class="column">
-| Bitwise Operator | Initial value |
-|------------------|---------------|
-| `&`              | `~0`          |
-| `|`              | `0`           |
-| `^`              | `0`           |
-</div>
-
-# Reduction operators in Fortran
-
-<div class="column">
-| Logical Operator | Initial value |
-|------------------|---------------|
-| `.and.`          | `.true.`      |
-| `.or.`           | `.false.`     |
-| `.eqv.`          | `.true.`      |
-| `.neqv.`         | `.false.`     |
-</div>
-
-<div class="column">
-| Bitwise Operator | Initial value |
-|------------------|---------------|
-| `iand`           | all bits on   |
-| `ior`            | `0`           |
-| `ieor`           | `0`           |
-</div>
-
-
+# Unstructured data regions {.section}
 
 # Unstructured data regions
 
