@@ -112,8 +112,37 @@ The output of job will be in file `slurm-xxxxx.out`. You can check the status of
 The reservation `openmp_offload` is available during the course days and it
 is accessible only with the training user accounts.
 
+## Profiling with NVIDIA Nsight Systems
 
+[NVIDIA Nsight Systems](https://docs.nvidia.com/nsight-systems/index.html) 
+can be used for profiling the code in Mahti. First, one should collect a
+trace of application run with `nsys` command:
+```
+...
+#SBATCH --gres=gpu:a100:1
 
+srun nsys profile -t cuda,openmp ./my_exe
+```
+
+After a succesfull trace collection, data is written into file
+`reportN.qdstrm`. The trace can then be analyzed with GUI.
+
+First, `PATH` needs to be set:
+```
+export PATH=$PATH:/appl/spack/v016/install-tree/gcc-4.8.5/nvhpc-21.2-l6xyb4/Linux_x86_64/21.2/profilers/Nsight_Systems/bin
+```
+
+Then, one can start the GUI with the `nsys-ui` command and import the
+`reportN.qdstrm` file via **File** -> **Import...** dialog.
+
+GUI converts `reportN.qdstrm` to ``reportN.qdrep` and summary
+statistics can then be investigated also from command line:
+
+```
+rm reportN.sqlite  # In Mahti a zero size file is generated
+nsys stats reportN.qdrep
+```
+ 
 
 
 
