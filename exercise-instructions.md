@@ -125,24 +125,29 @@ srun nsys profile -t cuda,openmp ./my_exe
 ```
 
 After a succesfull trace collection, data is written into file
-`reportN.qdstrm`. The trace can then be analyzed with GUI.
+`reportN.qdstrm`. 
 
-First, `PATH` needs to be set:
+In order to use the GUI or looking for summary statistics from command line, set PATH as follows:
+
 ```
-export PATH=$PATH:/appl/spack/v016/install-tree/gcc-4.8.5/nvhpc-21.2-l6xyb4/Linux_x86_64/21.2/profilers/Nsight_Systems/bin
+export PATH=$PATH:/appl/spack/v016/install-tree/gcc-4.8.5/nvhpc-21.2-l6xyb4/Linux_x86_64/21.2/profilers/Nsight_Systems/host-linux-x64/
 ```
 
-Then, one can start the GUI with the `nsys-ui` command and import the
-`reportN.qdstrm` file via **File** -> **Import...** dialog.
+For command line summary, the `.qdstrm` file needs to be converted into `.qdrep` format:
+```
+QdstrmImporter -i reportN.qdstrm
+```
 
-GUI converts `reportN.qdstrm` to ``reportN.qdrep` and summary
-statistics can then be investigated also from command line:
-
+Summary statistics can now been invesitgated from the command line with:
 ```
 rm reportN.sqlite  # In Mahti a zero size file is generated
 nsys stats reportN.qdrep
 ```
- 
+
+A more detailed analysis can be done with GUI which can be started as
+```
+nsys-ui reportN.qdrep
+``` 
 
 
 
