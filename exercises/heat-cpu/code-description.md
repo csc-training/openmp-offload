@@ -117,7 +117,7 @@ Examples on how to run the binary:
 
 The program will produce an image (PNG) of the temperature field after every
 500 iterations. You can change the frequency by modifying the parameter
-`image_interval` in [main.c](c/main.c) (or [main.F90](fortran/main.F90)).
+`image_interval` in [main.c](cpp/main.cpp) (or [main.F90](fortran/main.F90)).
 You can also visualize the images e.g. with the following command:
 `animate heat_*.png`.
 
