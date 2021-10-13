@@ -20,7 +20,7 @@ program heat_solve
   integer, parameter :: image_interval = 100 ! Image output interval
 
   type(parallel_data) :: parallelization
-  integer :: num_threads = 1
+  integer :: num_devices = 0
 
   integer :: ierr, provided
 
@@ -36,18 +36,13 @@ program heat_solve
     call mpi_abort(MPI_COMM_WORLD, 5)
   end if
 
-!$omp parallel private(iter)
-
 #ifdef _OPENMP
-  !$omp master
-  num_threads = omp_get_num_threads()
-  !$omp end master
+  num_devices = omp_get_num_devices()
 #endif
 
   call initialize(current, previous, nsteps, parallelization)
 
   ! Draw the picture of the initial state
-  !$omp single
   call write_field(current, 0, parallelization)
 
   average_temp = average(current, parallelization)
@@ -55,7 +50,10 @@ program heat_solve
      write(*,'(A, I5, A, I5, A, I5)') 'Simulation grid: ', current%nx_full, ' x ', & 
           & current%ny_full, ' time steps: ', nsteps
      write(*,'(A, I5)') 'MPI processes: ', parallelization%size
-     write(*,'(A, I5)') 'OpenMP threads: ', num_threads
+     write(*,'(A, I5)') 'Devices: ', num_devices
+#ifdef GPU_MPI
+     write(*,'(A)') 'Using GPU aware MPI'
+#endif
      write(*,'(A,F9.6)') 'Average temperature at start: ', average_temp
   end if
 
@@ -68,23 +66,23 @@ program heat_solve
 
   start =  mpi_wtime()
   call enter_data(current, previous)
-  !$omp end single
 
   do iter = 1, nsteps
-     !$omp single
+#ifndef GPU_MPI
+     call update_host(previous)
+#endif
      call exchange(previous, parallelization)
-     !$omp end single
+#ifndef GPU_MPI
+     call update_device(previous)
+#endif
      call evolve(current, previous, a, dt)
-     !$omp single
      if (mod(iter, image_interval) == 0) then
         call update_host(current)
         call write_field(current, iter, parallelization)
      end if
      call swap_fields(current, previous)
-     !$omp end single
   end do
 
-!$omp end parallel
   call exit_data(current, previous)
 
   stop = mpi_wtime()
