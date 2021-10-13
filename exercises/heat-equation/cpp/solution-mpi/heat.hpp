@@ -67,3 +67,5 @@ void exit_data(Field& temperature1, Field& temperature2);
 
 void update_host(Field& temperature);
 
+void update_device(Field& temperature);
+

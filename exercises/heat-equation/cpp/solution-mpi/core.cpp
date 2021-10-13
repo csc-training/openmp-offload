@@ -11,7 +11,9 @@ void exchange(Field& field, const ParallelData parallel)
     double *sbuf_up, *sbuf_down, *rbuf_up, *rbuf_down;
 
     data = field.temperature.data();
+#ifdef GPU_MPI
 #pragma omp target data use_device_ptr(data)
+#endif
     {
 
     // Send to the up, receive from down
@@ -48,11 +50,13 @@ void evolve(Field& curr, Field& prev, const double a, const double dt)
 
   int nx = curr.nx;
   int ny = curr.ny;
+  int field_size = (nx + 2) * (ny + 2);
 
   // Determine the temperature field at next time step
   // As we have fixed boundary conditions, the outermost gridpoints
   // are not updated.
-  #pragma omp for
+  #pragma omp target teams distribute parallel for collapse(2) \
+   map(tofrom:currdata[0:field_size], prevdata[0:field_size])
   for (int i = 1; i < nx + 1; i++) {
     for (int j = 1; j < ny + 1; j++) {
       int ind = i * (ny + 2) + j;
@@ -109,5 +113,17 @@ void update_host(Field& temperature)
     ny = temperature.ny;
 
 #pragma omp target update from(data[0:(nx+2)*(ny+2)])
+}   
+
+void update_device(Field& temperature) 
+{   
+    int nx, ny;
+    double *data;
+
+    data = temperature.temperature.data();
+    nx = temperature.nx;
+    ny = temperature.ny;
+
+#pragma omp target update to(data[0:(nx+2)*(ny+2)])
 }   
 

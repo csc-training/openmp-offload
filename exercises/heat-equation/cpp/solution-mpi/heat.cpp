@@ -49,7 +49,6 @@ void Field::generate(ParallelData parallel) {
 
     // Radius of the source disc 
     auto radius = nx_full / 6.0;
-    #pragma omp for
     for (int i = 0; i < nx + 2; i++) {
         for (int j = 0; j < ny + 2; j++) {
             // Distance of point i, j from the origin 
@@ -66,7 +65,6 @@ void Field::generate(ParallelData parallel) {
     }
 
     // Boundary conditions
-    #pragma omp for
     for (int i = 0; i < nx + 2; i++) {
         // Left
         temperature[i * (ny + 2)] = 20.0;
@@ -76,7 +74,6 @@ void Field::generate(ParallelData parallel) {
 
     // Top
     if (0 == parallel.rank) {
-        #pragma omp for
         for (int j = 0; j < ny + 2; j++) {
             int ind = j;
             temperature[ind] = 85.0;            
@@ -84,7 +81,6 @@ void Field::generate(ParallelData parallel) {
     }
     // Bottom
     if (parallel.rank == parallel.size - 1) {
-        #pragma omp for
         for (int j = 0; j < ny + 2; j++) {
             int ind = (nx + 1) * (ny + 2) + j;
             temperature[ind] = 5.0;

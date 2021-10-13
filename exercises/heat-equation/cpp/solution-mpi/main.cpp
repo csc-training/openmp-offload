@@ -28,21 +28,16 @@ int main(int argc, char **argv)
 
     ParallelData parallelization; // Parallelization info
 
-    int num_threads = 1;
-
-#pragma omp parallel
-  {
-
+    int num_devices = 0;
 #ifdef _OPENMP
-    #pragma omp master
-    num_threads = omp_get_num_threads();
+    num_devices = omp_get_num_devices();
 #endif
+
+
 
     initialize(argc, argv, current, previous, nsteps, parallelization);
 
     // Output the initial field
-    #pragma omp single
-    {
     write_field(current, 0, parallelization);
 
     auto average_temp = average(current, parallelization);
@@ -51,11 +46,13 @@ int main(int argc, char **argv)
                   << "rows: " << current.nx_full << " columns: " << current.ny_full
                   << " time steps: " << nsteps << std::endl;
         std::cout << "Number of MPI tasks: " << parallelization.size << std::endl;
-        std::cout << "Number of OpenMP threads: " << num_threads << std::endl;
+        std::cout << "Number of devices: " << num_devices << std::endl;
+#ifdef GPU_MPI
+        std::cout << "Using GPU aware MPI" << std::endl;
+#endif
         std::cout << std::fixed << std::setprecision(6);
         std::cout << "Average temperature at start: " << average_temp << std::endl;
     }
-    } // omp end single
 
     const double a = 0.5;     // Diffusion constant 
     auto dx2 = current.dx * current.dx;
@@ -66,16 +63,18 @@ int main(int argc, char **argv)
     //Get the start time stamp 
     auto start_clock = MPI_Wtime();
 
-    #pragma omp single
     enter_data(current, previous);
 
     // Time evolve
     for (int iter = 1; iter <= nsteps; iter++) {
-        #pragma omp single
+#ifndef GPU_MPI
+        update_host(previous);
+#endif
         exchange(previous, parallelization);
+#ifndef GPU_MPI
+        update_device(previous);
+#endif
         evolve(current, previous, a, dt);
-        #pragma omp single
-        {
         if (iter % image_interval == 0) {
             update_host(current);
             write_field(current, iter, parallelization);
@@ -83,18 +82,14 @@ int main(int argc, char **argv)
         // Swap current field so that it will be used
         // as previous for next iteration step
         std::swap(current, previous);
-        } // omp end single
     }
 
-    #pragma omp single
     exit_data(current, previous);
 
     auto stop_clock = MPI_Wtime();
 
-    #pragma omp master
-    {
     // Average temperature for reference 
-    auto average_temp = average(previous, parallelization);
+    average_temp = average(previous, parallelization);
 
     if (0 == parallelization.rank) {
         std::cout << "Iteration took " << (stop_clock - start_clock)
@@ -105,9 +100,7 @@ int main(int argc, char **argv)
                       << 59.281239 << std::endl;
         }
     }
-    } // omp end master
 
-  } // omp end parallel
     
     // Output the final field
     write_field(previous, nsteps, parallelization);
