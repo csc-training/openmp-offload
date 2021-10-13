@@ -138,6 +138,15 @@ Then, one can start the GUI with the `nsys-ui` command and import the
 GUI converts `reportN.qdstrm` to ``reportN.qdrep` and summary
 statistics can then be investigated also from command line:
 
+Or An alternative way is to use *QdstrmImporter* which extracts events data from .qdrsm files to qdrep for which we can then visualize using nsys cli tools. 
+
+You can run : 
+``` sh 
+/appl/spack/v016/install-tree/gcc-4.8.5/nvhpc-21.2-l6xyb4/Linux_x86_64/21.2/profilers/Nsight_Systems/host-linux-x64/QdstrmImporter -i report.qdstrm -o reportN
+
+```
+> Note the above command is only applicable to CSC's mahti clusters. You may wish to locate the path of QdstrmImporter from you installation.
+
 ```
 rm reportN.sqlite  # In Mahti a zero size file is generated
 nsys stats reportN.qdrep
