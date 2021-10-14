@@ -23,13 +23,14 @@ int main() {
   for(int block = 0; block < num_blocks; block++ ) {
     int start = block * (HEIGHT/num_blocks);
     int end = start + (HEIGHT/num_blocks);
-    #pragma omp target loop collapse(2) nowait
+    #pragma omp target loop collapse(2) depend(out:image[block*block_size]) nowait
     for(int y = start; y < end; y++) {
       for(int x = 0; x < WIDTH; x++) {
         image[y*WIDTH+x] = mandelbrot(x,y);
       }
     }
-    #pragma omp target update from(image[block*block_size:block_size]) nowait
+    #pragma omp target update from(image[block*block_size:block_size]) \
+                depend(in:image[block*block_size]) nowait
   }
 
   #pragma omp taskwait
