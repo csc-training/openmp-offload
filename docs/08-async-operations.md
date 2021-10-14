@@ -19,7 +19,7 @@ lang:   en
 
 # Asynchronous execution: nowait and taskwait
 
-- ´target` construct creates an implicit OpenMP task
+- `target` construct creates an implicit OpenMP task
 - Similar to OpenMP explicit task constructs (`task`, `taskloop`), `target` has
   a `nowait` clause
     - removes the implicit barrier
@@ -105,6 +105,20 @@ process_in_host();
 <div class=column>
 ![](img/target-dependencies.png){.center width=80%}
 </div>
+
+# Task dependencies
+
+- Dependencies may be specifief also for a part of an array
+
+```c
+// Preocessing array in blocks
+for (int ib = 0; ib < n; ib += bf) {
+  #pragma omp ... depend(out:A[ib*bf]) nowait
+  {Processing step 1}
+  #pragma omp ... depend(in:A[ib*bf]) nowait
+  {Processing step 2}
+}
+```
 
 # Summary
 

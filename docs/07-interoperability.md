@@ -56,7 +56,7 @@ lang:   en
 cublasInit();
 double *x, *y;
 //Allocate x and y, and initialise x
-#pragma omp target data map(to:(x[:n]), map(from:y[:n]))
+#pragma omp target data map(to:x[:n]), map(from:y[:n]))
 {
     #pragma omp target data use_device_ptr(x, y) {
         cublasDaxpy(n, a, x, 1, y, 1);
@@ -76,7 +76,7 @@ double *x, *y;
 - Interface function in CUDA-file must have `extern "C" void func(...)`
 - The CUDA-codes are compiled with NVIDIA `nvcc` compiler, e.g.
   `nvcc -c -O3 --restrict daxpy_cuda.cu`
-- The OpenMP-codes are compiled with NVIDIA `nvc` compiler e.g.
+- The OpenMP-codes are compiled with NVIDIA `nvc` or `nvc++` compiler e.g.
   `nvc -c -mp=gpu -O3 call_cuda_from_openmp.c`
 - For linking, `-lcudart -L$CUDA_HOME/lib64` is needed
 
