@@ -35,7 +35,7 @@ int main() {
       }
     }
 
-#pragma omp target update from(image[y_start:block_size]) \
+#pragma omp target update from(image[block*block_size:block_size]) \
             depend(in:image[y_start]) nowait
  
   }
