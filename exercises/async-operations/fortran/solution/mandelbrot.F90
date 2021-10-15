@@ -16,12 +16,12 @@ program mandelbrot
 
   t0 = omp_get_wtime()
 
-  !$omp target data map(to:image(1:height, 1:width))
+  !$omp target data map(to:image(0:height-1, 0:width-1))
   do block = 0, num_blocks - 1
     y_start = block * (height / num_blocks)
     y_end = y_start + (height / num_blocks)
     !$omp target teams distribute parallel do collapse(2) & 
-    !$omp depend(out:image(y_start, y_end)) nowait
+    !$omp depend(out:image(y_start, 0)) nowait
     do y = y_start, y_end - 1
       do x = 0, width - 1
         image(x, y) = kernel(x, y) 
@@ -29,8 +29,8 @@ program mandelbrot
     end do
     !$omp end target teams distribute parallel do
 
-    !$omp target update from(image(1:y_start, 1:y_end)) & 
-    !$omp depend(in:image(y_start, y_end)) nowait
+    !$omp target update from(image(y_start:y_end - 1, 0:width - 1)) & 
+    !$omp depend(in:image(y_start, 0)) nowait
   end do
 
   !$omp end target data
