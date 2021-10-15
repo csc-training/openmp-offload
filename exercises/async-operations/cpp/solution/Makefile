@@ -1,9 +1,11 @@
-# CCFLAGS=-mp=gpu -gpu=cc80
-# CXX=nvc++
-CCFLAGS=-fopenmp
-CXX=g++
-CC=gcc
+CCFLAGS=-mp=gpu -gpu=cc80
+CXX=nvc++
+CC=nvc
+# CCFLAGS=-fopenmp
+# CXX=g++
+# CC=gcc
 CFLAGS=
+
 LDFLAGS=-lpng
 
 EXE=mandelbrot

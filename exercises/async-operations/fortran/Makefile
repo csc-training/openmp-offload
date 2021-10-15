@@ -1,8 +1,10 @@
-# CCFLAGS=-mp=gpu -gpu=cc80
-# CXX=nvc++
-FCFLAGS=-g -fopenmp -O0
-CC=gcc
-FC=gfortran
+FCFLAGS=-mp=gpu -gpu=cc80
+FC=nvfortran
+CC=nvc
+#FCFLAGS=-g -fopenmp -O0
+#FC=gfortran
+#CC=gcc
+
 LDFLAGS=-lpng
 
 EXE=mandelbrot
