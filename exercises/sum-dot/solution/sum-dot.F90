@@ -28,6 +28,7 @@ program vectorsum
   do i = 1, nx
      res = res + vecC(i) * vecB(i)
   end do
+  !$omp end target teams distribute parallel do
 
   !$omp end target data 
 
