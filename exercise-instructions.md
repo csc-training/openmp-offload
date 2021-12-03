@@ -57,7 +57,7 @@ Programs with OpenMP offloading can be build in Mahti with [NVIDIA HPC
 Toolkit](https://docs.nvidia.com/hpc-sdk/index.html). The compiler
 environment is enabled via module system:
 ```bash
-module load nvhpc openmpi/4.0.5-cuda
+module load nvhpc/21.2 openmpi/4.0.5-cuda
 ```
 The compiler commands (without MPI) for C, C++ and Fortran are `nvc`,
 `nvc++`, and `nvfortran`, and OpenMP offload support is enabled with
