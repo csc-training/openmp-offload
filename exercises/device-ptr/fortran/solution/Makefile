@@ -3,10 +3,20 @@ FCFLAGS=-mp=gpu -gpu=cc80
 FC=nvfortran
 
 OBJS=pi.o curand.o
+
+all: pi
+
+pi.F90: curand.mod
+
+curand.mod: curand.F90
+
 pi: $(OBJS)
 	$(FC) -o $@ $(OBJS) $(FCFLAGS) -L$(CURAND_DIR)/lib64 -rpath=$(CURAND_DIR)/lib64 -lcurand 
 
 %.o: %.F90
 	$(FC) $(FCFLAGS) -c $< -o $@
+
+%.mod: %.F90
+	$(FC) $(FCFLAGS) -c $< 
 clean:
 	rm -f pi *.o *.mod
