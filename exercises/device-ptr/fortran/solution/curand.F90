@@ -16,9 +16,8 @@ module curand
 
     function curandGenerateUniform(gen, x, n) bind(C, name='curandGenerateUniform') result(stat)
       use, intrinsic :: iso_c_binding
-      use cudafor
       integer(c_size_t), value :: gen
-      real(c_float), device :: x(*) 
+      real :: x(*) 
       integer(c_size_t), value :: n
       integer(c_size_t) :: stat
 
